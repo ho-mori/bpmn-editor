@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BPMN Editor – bpmn-js</title>
+    <!-- bpmn‑js モデラー (最新 18.x) -->
+    <script src="https://unpkg.com/bpmn-js@18.6.2/dist/bpmn-modeler.development.js"></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: system-ui, sans-serif;
+      }
+
+      #toolbar {
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background: #f5f7fa;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      #canvas {
+        height: calc(100% - 48px); /* toolbar 高さ分を差し引く */
+      }
+
+      button {
+        padding: 0.4rem 0.8rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        background: #2684ff;
+        color: #fff;
+      }
+
+      button:hover {
+        opacity: 0.9;
+      }
+
+      input[type="file"] {
+        padding: 0.3rem 0.4rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── ツールバー ──────────────────────────── -->
+    <div id="toolbar">
+      <input type="file" id="file-input" accept=".bpmn,.xml" />
+      <button id="btn-new">New Diagram</button>
+      <button id="btn-download-xml">Save BPMN</button>
+      <button id="btn-download-svg">Save SVG</button>
+    </div>
+
+    <!-- ── BPMN モデラのキャンバス ───────────────── -->
+    <div id="canvas"></div>
+
+    <!-- ── スクリプト──────────────────────────── -->
+    <script>
+      // bpmn‑js モデラーを初期化
+      const bpmnModeler = new BpmnJS({
+        container: '#canvas',
+        keyboard: {
+          bindTo: window,
+        },
+      });
+
+      // ===== 基本ユーティリティ =====
+      const fitViewport = () => {
+        const canvas = bpmnModeler.get('canvas');
+        canvas.zoom('fit-viewport');
+      };
+
+      const loadDiagram = async (xml) => {
+        try {
+          await bpmnModeler.importXML(xml);
+          fitViewport();
+        } catch (err) {
+          console.error('❌ Diagram import error:', err);
+          alert('BPMN の読み込みに失敗しました\n' + err.message);
+        }
+      };
+
+      // ===== ファイル入力で読み込み =====
+      document.getElementById('file-input').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const text = await file.text();
+        await loadDiagram(text);
+      });
+
+      // ===== 新規作成 =====
+      document.getElementById('btn-new').addEventListener('click', async () => {
+        await bpmnModeler.createDiagram();
+        fitViewport();
+      });
+
+      // ===== 保存：XML =====
+      document.getElementById('btn-download-xml').addEventListener('click', async () => {
+        try {
+          const { xml } = await bpmnModeler.saveXML({ format: true });
+          downloadFile(xml, 'diagram.bpmn', 'application/bpmn20-xml');
+        } catch (err) {
+          console.error('❌ XML save error:', err);
+        }
+      });
+
+      // ===== 保存：SVG (プレビュー用画像) =====
+      document.getElementById('btn-download-svg').addEventListener('click', async () => {
+        try {
+          const { svg } = await bpmnModeler.saveSVG();
+          downloadFile(svg, 'diagram.svg', 'image/svg+xml');
+        } catch (err) {
+          console.error('❌ SVG save error:', err);
+        }
+      });
+
+      // ===== ダウンロード ヘルパ =====
+      function downloadFile(data, filename, mimeType) {
+        const blob = new Blob([data], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      // ===== drag & drop 読み込み =====
+      const canvasEl = document.getElementById('canvas');
+      canvasEl.addEventListener('dragover', (e) => e.preventDefault());
+      canvasEl.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          const text = await file.text();
+          await loadDiagram(text);
+        }
+      });
+
+      // ===== 初期ロード：allocation-auto.bpmn20.xml が隣にあれば自動読込 =====
+      fetch('allocation-auto.bpmn20.xml')
+        .then((r) => (r.ok ? r.text() : Promise.reject(r)))
+        .then((xml) => loadDiagram(xml))
+        .catch(() => {
+          // ファイルが見つからない場合は空図を作成
+          bpmnModeler.createDiagram();
+          fitViewport();
+        });
+    </script>
+  </body>
+</html>
