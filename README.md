@@ -56,7 +56,3 @@ $ python -m http.server 8080
 ## ライセンス
 
 MIT
-
-## 作者
-
-森 宝松 / 合同会社 Kinova
