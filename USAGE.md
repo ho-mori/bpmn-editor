@@ -17,6 +17,7 @@
 
 ## 新規作成
 - **New Diagram** ボタンを押すと空の BPMN 図を生成します。
+- **New allocation-auto.bpmn20.xml** ボタンでは保存名を `allocation-auto.bpmn20.xml` に固定した空図を作成できます。
 
 ## 保存
 - **Save BPMN** を押すとファイル名を指定して BPMN を保存できます。

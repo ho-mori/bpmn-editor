@@ -32,6 +32,7 @@ $ python -m http.server 8080
 | ------------------- | ---------------------------------------- |
 | 📂 **ファイル選択** | `.bpmn` / `.xml` を読み込み              |
 | ➕ **New Diagram**  | 空の BPMN 図を生成                       |
+| ➕ **New allocation-auto.bpmn20.xml** | 空図を生成し保存名を `allocation-auto.bpmn20.xml` に設定 |
 | 💾 **Save BPMN**    | ファイル名を指定して BPMN をダウンロード |
 | 🖼 **Save SVG**      | SVG 画像をダウンロード                   |
 
