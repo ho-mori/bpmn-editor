@@ -103,7 +103,9 @@
       document.getElementById('btn-download-xml').addEventListener('click', async () => {
         try {
           const { xml } = await bpmnModeler.saveXML({ format: true });
-          downloadFile(xml, 'diagram.bpmn', 'application/bpmn20-xml');
+          const name =
+            prompt('File name to save as?', 'diagram.bpmn') || 'diagram.bpmn';
+          downloadFile(xml, name, 'application/bpmn20-xml');
         } catch (err) {
           console.error('❌ XML save error:', err);
         }

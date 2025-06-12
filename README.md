@@ -12,6 +12,8 @@
 - リポジトリ直下に `allocation-auto.bpmn20.xml` があれば **自動ロード**
 - キーボードショートカット (Delete, Ctrl/Cmd+Z など) 標準サポート
 
+> TIP: **Save BPMN** では任意のファイル名を入力できるため、`allocation-auto.bpmn20.xml` を1から作成可能です。
+
 ## デモ
 
 ```
@@ -30,7 +32,7 @@ $ python -m http.server 8080
 | ------------------- | ---------------------------------------- |
 | 📂 **ファイル選択** | `.bpmn` / `.xml` を読み込み              |
 | ➕ **New Diagram**  | 空の BPMN 図を生成                       |
-| 💾 **Save BPMN**    | 編集結果を `diagram.bpmn` でダウンロード |
+| 💾 **Save BPMN**    | ファイル名を指定して BPMN をダウンロード |
 | 🖼 **Save SVG**      | SVG 画像をダウンロード                   |
 
 > TIP: `#canvas` にファイルをドラッグ & ドロップしても読み込めます。
