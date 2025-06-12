@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.activiti.org/processdef">
+  <bpmn:process id="allocation-auto" name="自動引当" isExecutable="true">
+    <bpmn:documentation>取り込んだ出庫指図に含まれる明細を全て引当処理する</bpmn:documentation>
+    <bpmn:startEvent id="sid-b8219949-0182-45ff-8523-211c68606f53" activiti:initiator="system">
+      <bpmn:outgoing>Flow_1dveuw2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="setBusinessKeyTask" name="出庫指図IDをビジネスキーとして登録する" activiti:delegateExpression="${setBusinessKeyTask}">
+      <bpmn:incoming>Flow_03mskwr</bpmn:incoming>
+      <bpmn:incoming>Flow_0rvtiei</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w82msk</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1dveuw2" sourceRef="sid-b8219949-0182-45ff-8523-211c68606f53" targetRef="registerShipmentRequestTask" />
+    <bpmn:serviceTask id="registerShipmentRequestTask" name="出庫指図を登録する" implementation="registerShipmentRequestTask">
+      <bpmn:incoming>Flow_1dveuw2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rvtiei</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0rvtiei" sourceRef="registerShipmentRequestTask" targetRef="setBusinessKeyTask" />
+    <bpmn:sequenceFlow id="Flow_1w82msk" sourceRef="setBusinessKeyTask" targetRef="allocationTask" />
+    <bpmn:serviceTask id="allocationTask" name="引当する" implementation="allocationTask">
+      <bpmn:incoming>Flow_1w82msk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0b5orl5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0yihonr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_15ddco8">
+      <bpmn:incoming>Flow_0yihonr</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0yihonr" sourceRef="allocationTask" targetRef="Event_15ddco8" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_allocation.bpmn20">
+    <bpmndi:BPMNPlane id="BPMNPlane_allocation.bpmn20" bpmnElement="allocation-auto">
+      <bpmndi:BPMNEdge id="Flow_1w82msk_di" bpmnElement="Flow_1w82msk">
+        <omgdi:waypoint x="-100" y="-431" />
+        <omgdi:waypoint x="-40" y="-431" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rvtiei_di" bpmnElement="Flow_0rvtiei">
+        <omgdi:waypoint x="-260" y="-431" />
+        <omgdi:waypoint x="-200" y="-431" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dveuw2_di" bpmnElement="Flow_1dveuw2">
+        <omgdi:waypoint x="-435" y="-431" />
+        <omgdi:waypoint x="-360" y="-431" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yihonr_di" bpmnElement="Flow_0yihonr">
+        <omgdi:waypoint x="60" y="-431" />
+        <omgdi:waypoint x="122" y="-431" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="shape-2bf33845-7c71-4dad-b8da-ab93b541bde1" bpmnElement="sid-b8219949-0182-45ff-8523-211c68606f53">
+        <omgdc:Bounds x="-465" y="-446" width="30" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tyzthi_di" bpmnElement="setBusinessKeyTask">
+        <omgdc:Bounds x="-200" y="-471" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19brhfm_di" bpmnElement="registerShipmentRequestTask">
+        <omgdc:Bounds x="-360" y="-471" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ly4a9f_di" bpmnElement="allocationTask">
+        <omgdc:Bounds x="-40" y="-471" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15ddco8_di" bpmnElement="Event_15ddco8">
+        <omgdc:Bounds x="122" y="-449" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
