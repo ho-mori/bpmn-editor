@@ -19,10 +19,10 @@
 $ git clone <this-repo-url>
 $ cd <repo>
 $ python -m http.server 8080
-# ブラウザで http://localhost:8080/bpmn-js-editor.html を開く
+# ブラウザで http://localhost:8080/index.html を開く
 ```
 
-静的ホスティング (GitHub Pages / Vercel / S3 等) に `bpmn-js-editor.html` を置くだけでも動きます。
+静的ホスティング (GitHub Pages / Vercel / S3 等) に `index.html` を置くだけでも動きます。
 
 ## 使い方
 
@@ -38,7 +38,7 @@ $ python -m http.server 8080
 ## ファイル構成
 
 ```
-├─ bpmn-js-editor.html   # メイン HTML (エディタ本体)
+├─ index.html            # メイン HTML (エディタ本体)
 └─ allocation-auto.bpmn20.xml  # サンプル BPMN (任意)
 ```
 
