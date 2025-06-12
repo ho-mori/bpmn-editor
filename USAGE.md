@@ -19,7 +19,7 @@
 - **New Diagram** ボタンを押すと空の BPMN 図を生成します。
 
 ## 保存
-- **Save BPMN** で編集結果を `diagram.bpmn` としてダウンロードします。
+- **Save BPMN** を押すとファイル名を指定して BPMN を保存できます。
 - **Save SVG** で BPMN 図のプレビュー画像 (SVG) をダウンロードします。
 
 ## 編集のポイント
