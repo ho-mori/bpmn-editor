@@ -52,6 +52,7 @@
     <div id="toolbar">
       <input type="file" id="file-input" accept=".bpmn,.xml" />
       <button id="btn-new">New Diagram</button>
+      <button id="btn-new-allocation">New allocation-auto.bpmn20.xml</button>
       <button id="btn-download-xml">Save BPMN</button>
       <button id="btn-download-svg">Save SVG</button>
     </div>
@@ -68,6 +69,7 @@
           bindTo: window,
         },
       });
+      let currentFilename = 'diagram.bpmn';
 
       // ===== 基本ユーティリティ =====
       const fitViewport = () => {
@@ -89,6 +91,7 @@
       document.getElementById('file-input').addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
+        currentFilename = file.name;
         const text = await file.text();
         await loadDiagram(text);
       });
@@ -96,15 +99,25 @@
       // ===== 新規作成 =====
       document.getElementById('btn-new').addEventListener('click', async () => {
         await bpmnModeler.createDiagram();
+        currentFilename = 'diagram.bpmn';
         fitViewport();
       });
+
+      document
+        .getElementById('btn-new-allocation')
+        .addEventListener('click', async () => {
+          await bpmnModeler.createDiagram();
+          currentFilename = 'allocation-auto.bpmn20.xml';
+          fitViewport();
+        });
 
       // ===== 保存：XML =====
       document.getElementById('btn-download-xml').addEventListener('click', async () => {
         try {
           const { xml } = await bpmnModeler.saveXML({ format: true });
           const name =
-            prompt('File name to save as?', 'diagram.bpmn') || 'diagram.bpmn';
+            prompt('File name to save as?', currentFilename) || currentFilename;
+          currentFilename = name;
           downloadFile(xml, name, 'application/bpmn20-xml');
         } catch (err) {
           console.error('❌ XML save error:', err);
@@ -141,6 +154,7 @@
         e.preventDefault();
         const file = e.dataTransfer.files[0];
         if (file) {
+          currentFilename = file.name;
           const text = await file.text();
           await loadDiagram(text);
         }
@@ -149,10 +163,14 @@
       // ===== 初期ロード：allocation-auto.bpmn20.xml が隣にあれば自動読込 =====
       fetch('allocation-auto.bpmn20.xml')
         .then((r) => (r.ok ? r.text() : Promise.reject(r)))
-        .then((xml) => loadDiagram(xml))
+        .then((xml) => {
+          currentFilename = 'allocation-auto.bpmn20.xml';
+          loadDiagram(xml);
+        })
         .catch(() => {
           // ファイルが見つからない場合は空図を作成
           bpmnModeler.createDiagram();
+          currentFilename = 'diagram.bpmn';
           fitViewport();
         });
     </script>
